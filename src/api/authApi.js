@@ -18,6 +18,7 @@ export const authLogin = async (user) => {
   const response = await authApi.post("/login/", user);
   const { access_token } = response.data;
   localStorage.setItem("userToken", access_token);
+  console.log(response);
 };
 
 export default authApi;

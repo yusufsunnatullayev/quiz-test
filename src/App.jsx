@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import LogIn from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(
@@ -25,6 +26,7 @@ const App = () => {
   return (
     <div className={`${darkMode ? "dark" : ""}`}>
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <ToastContainer autoClose={1000} />
       <Routes>
         <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
           {routes.map((route) => (

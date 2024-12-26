@@ -3,6 +3,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { authLogin } from "../api/authApi";
+import { toast } from "react-toastify";
 
 const LogIn = ({ setLoggedIn }) => {
   const [visible, setVisible] = useState(false);
@@ -17,6 +18,7 @@ const LogIn = ({ setLoggedIn }) => {
       const user = Object.fromEntries(form.entries());
       login.mutate(user);
       setLoggedIn(true);
+      toast.success("Siz muvafaqqiyatli kirdingiz!");
       navigate("/");
     } catch (error) {
       console.error(error);
