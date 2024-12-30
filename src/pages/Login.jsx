@@ -9,20 +9,28 @@ const LogIn = ({ setLoggedIn }) => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
 
-  const login = useMutation(authLogin);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const form = new FormData(e.target);
-      const user = Object.fromEntries(form.entries());
-      login.mutate(user);
+  const { mutate: login, isLoading } = useMutation(authLogin, {
+    onSuccess: () => {
+      toast.success("Siz muvaffaqiyatli kirdingiz!");
       setLoggedIn(true);
-      toast.success("Siz muvafaqqiyatli kirdingiz!");
       navigate("/");
-    } catch (error) {
-      console.error(error);
+    },
+    onError: () => {
+      toast.error("Foydalanuvchi nomi yoki Parol xato!");
+    },
+  });
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const form = new FormData(e.target);
+    const user = Object.fromEntries(form.entries());
+
+    if (!user.username || !user.password) {
+      toast.error("Ma'lumotlarni to'diring!");
+      return;
     }
+
+    login(user);
   };
 
   return (
@@ -42,6 +50,7 @@ const LogIn = ({ setLoggedIn }) => {
             className="py-2 px-3 rounded border outline-none w-full"
             type="text"
             name="username"
+            required
           />
         </div>
         <div className="w-full flex flex-col items-start gap-1">
@@ -51,6 +60,7 @@ const LogIn = ({ setLoggedIn }) => {
               className="py-2 px-3 border-none outline-none flex-1"
               type={visible ? "text" : "password"}
               name="password"
+              required
             />
             <button
               className="flex items-center justify-center"
@@ -61,8 +71,12 @@ const LogIn = ({ setLoggedIn }) => {
             </button>
           </div>
         </div>
-        <button className="w-full bg-purple-800 hover:opacity-80 duration-150 text-white rounded py-2 px-3 font-semibold text-base">
-          Kirish
+        <button
+          className="w-full bg-purple-800 hover:opacity-80 duration-150 text-white rounded py-2 px-3 font-semibold text-base"
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? "Loading..." : "Kirish"}
         </button>
         <span className="text-sm text-center text-gray-600 font-medium self-center">
           Agar akkauntingiz bo'lmasa{" "}

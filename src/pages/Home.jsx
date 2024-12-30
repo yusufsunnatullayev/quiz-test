@@ -3,8 +3,29 @@ import { Link } from "react-router-dom";
 import QuestionsAPI from "../components/containers/QuestionsAPI";
 import SubjectsAPI from "../components/containers/SubjectsAPI";
 import useFilter from "../hooks/useFilter";
+import { useQuery } from "react-query";
+import { getUser } from "../api/profileApi";
+import useGetUser from "../hooks/useGetUser";
 
 const Home = () => {
+  const setUser = useGetUser((state) => state.setUser);
+
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery(["getUser"], getUser);
+
+  if (isLoading) {
+    console.log("Loading user data...");
+  } else if (isError) {
+    console.error("Error fetching user data:", error);
+  } else {
+    console.log("User data:", user);
+    setUser(user);
+  }
+
   const sortButtons = [
     {
       id: 1,

@@ -16,6 +16,21 @@ export const getUser = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(response.data);
+  return response.data;
+};
+
+export const updateUser = async (data) => {
+  if (!token) {
+    throw new Error("No token found, please log in.");
+  }
+
+  const response = await profileApi.put("/profile/", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(response.data);
   return response.data;
 };
 

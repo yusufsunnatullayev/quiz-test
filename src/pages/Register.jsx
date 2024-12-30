@@ -3,27 +3,34 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { authRegister } from "../api/authApi";
+import { toast } from "react-toastify";
 
 const Register = ({ setLoggedIn }) => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
 
-  const register = useMutation(authRegister);
+  const { mutate: register, isLoading } = useMutation(authRegister, {
+    onSuccess: () => {
+      toast.success("Siz muvaffaqiyatli ro'yxatdan o'tdingiz!");
+      setLoggedIn(true);
+      navigate("/");
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.username[0]);
+    },
+  });
 
   const registerHandler = async (e) => {
     e.preventDefault();
-    try {
-      const form = new FormData(e.target);
-      const user = Object.fromEntries(form.entries());
-      console.log(user);
-      register.mutate(user);
-      setLoggedIn(true);
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      e.target.reset();
+    const form = new FormData(e.target);
+    const user = Object.fromEntries(form.entries());
+
+    if (!user.username || !user.password || !user.email) {
+      toast.error("Ma'lumotlarni to'diring!");
+      return;
     }
+
+    register(user);
   };
 
   return (
@@ -68,8 +75,12 @@ const Register = ({ setLoggedIn }) => {
             </button>
           </div>
         </div>
-        <button className="w-full bg-purple-800 hover:opacity-80 duration-150 text-white rounded py-2 px-3 font-semibold text-base">
-          Ro'yxatdan o'tish
+        <button
+          className="w-full bg-purple-800 hover:opacity-80 duration-150 text-white rounded py-2 px-3 font-semibold text-base"
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? "Loading..." : "Ro'yxatdan o'tish"}
         </button>
         <span className="text-sm text-center text-gray-600 font-medium self-center">
           Agar akkauntingiz bo'lsa{" "}

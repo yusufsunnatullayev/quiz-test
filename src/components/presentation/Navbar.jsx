@@ -4,15 +4,17 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { IoClose, IoMoonSharp, IoSunny } from "react-icons/io5";
 import { IoMdMenu } from "react-icons/io";
+import useGetUser from "../../hooks/useGetUser";
 
 const Navbar = ({ darkMode, setDarkMode }) => {
+  const userData = useGetUser((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const navigation = (to) => {
-    navigate(to);
-    setIsOpen(false);
-  };
+  // const navigation = (to) => {
+  //   navigate(to);
+  //   setIsOpen(false);
+  // };
 
   return (
     <nav className="w-full py-2 fixed top-0 left-0 z-10 bg-white shadow px-[2%] md:px-[10%] flex items-center justify-between dark:bg-neutral-900">
@@ -56,10 +58,18 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             onClick={() => setIsOpen(false)}
           >
             <div className="rounded-full w-8 h-8 flex items-center justify-center">
-              <FaUser className="text-base lg:text-lg text-purple-800 dark:text-purple-600" />
+              {userData?.image ? (
+                <img
+                  className="w-full h-full rounded-full object-cover"
+                  src={userData.img}
+                  alt=""
+                />
+              ) : (
+                <FaUser className="text-base lg:text-lg text-purple-800 dark:text-purple-600" />
+              )}
             </div>
             <span className="text-base lg:text-lg font-bold text-purple-800 dark:text-purple-600">
-              Yusuff_dev
+              {userData?.username}
             </span>
           </Link>
           <button
